@@ -1,7 +1,8 @@
 # rsschool-devops-course-tasks
 Training AWS DevOps course provided by EPAM
 
-# Overview
+# [Task 1: AWS Account Configuration](https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/1_basic-configuration/task_1.md)
+
 
 This repository demonstrates how to use **Terraform** to:
 - Create an S3 bucket for storing Terraform state.
