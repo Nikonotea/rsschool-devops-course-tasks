@@ -1,8 +1,6 @@
 # rsschool-devops-course-tasks
 Training AWS DevOps course provided by EPAM
 
-
-```md
 # Overview
 
 This repository demonstrates how to use **Terraform** to:
