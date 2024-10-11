@@ -108,7 +108,8 @@ After the S3 bucket has been created in Phase 1, you will now transition to usin
 - After that, apply the configuration to continue managing resources using the remote backend:
 
   ```bash
-  terraform apply -auto-approve
+  terraform plan -var-file="terraform.tfvars"
+  terraform apply -var-file="terraform.tfvars" -auto-approve
   ```
 
 This will:
