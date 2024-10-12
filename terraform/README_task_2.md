@@ -1,6 +1,25 @@
 # [Task 2: AWS Account Configuration](https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/1_basic-configuration/task_2.md)
 
 
+## AWS Infrastructure with Terraform
+
+This repository contains Terraform code to provision basic networking infrastructure on AWS, including:
+
+- **VPC**: A Virtual Private Cloud to isolate resources.
+- **Public Subnets**: Two public subnets in different Availability Zones (AZs).
+- **Private Subnets**: Two private subnets in different AZs.
+- **Internet Gateway**: Enables direct access to the Internet for public subnets.
+- **NAT Gateway**: Provides outbound Internet access for instances in private subnets.
+- **Security Groups**: Manages inbound and outbound traffic rules.
+
+## Usage
+
+1. Clone the repository:
+   ```bash
+   git clone git@github.com:Nikonotea/rsschool-devops-course-tasks.git
+   cd terraform
+
+
 #### Steps:
 - Navigate to the `phase1/` directory:
 
