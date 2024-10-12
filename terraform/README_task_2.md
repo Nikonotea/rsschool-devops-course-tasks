@@ -12,6 +12,9 @@ This repository contains Terraform code to provision basic networking infrastruc
 - **NAT Gateway**: Provides outbound Internet access for instances in private subnets.
 - **Security Groups**: Manages inbound and outbound traffic rules.
 
+![Screenshot 2024-10-13 001606](https://github.com/user-attachments/assets/23824eb6-a048-482e-830e-be096aaacaab)
+
+
 ## Usage
 
 1. Clone the repository:
