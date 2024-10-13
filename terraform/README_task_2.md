@@ -27,7 +27,7 @@ This repository contains Terraform code to provision basic networking infrastruc
 - Navigate to the `phase1/` directory:
 
   ```bash
-  cd phase1/
+  cd terraform/phase1/
   ```
 
 - Initialize Terraform:
@@ -59,7 +59,7 @@ After the S3 bucket has been created in Phase 1, you will now transition to usin
 - Navigate to the `phase2/` directory:
 
   ```bash
-  cd ../phase2/
+  cd terraform/phase2/
   ```
 
 - Reconfigure Terraform to use the remote backend by running:
