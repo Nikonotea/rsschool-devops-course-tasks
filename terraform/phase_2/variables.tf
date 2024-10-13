@@ -21,5 +21,19 @@ variable "github_repo" {
 variable "github_oidc_thumbprint" {
   description = "Thumbprint for GitHub OIDC provider"
   type        = string
-  default     = "6938fd4d98bab03faadb97b34396831e3780aea1"
+}
+
+variable "vpc_cidr" {
+  description = "CIDR block for the VPC"
+  type        = string
+}
+
+variable "public_subnet_cidrs" {
+  description = "List of public subnet CIDRs"
+  type        = list(string)
+}
+
+variable "private_subnet_cidrs" {
+  description = "List of private subnet CIDRs"
+  type        = list(string)
 }
