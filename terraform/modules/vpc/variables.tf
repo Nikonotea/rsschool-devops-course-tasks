@@ -1,11 +1,24 @@
-
-
-variable "vpc_name" {
-  description = "Name of the VPC"
-  type        = string
+variable "cidr_block" {
+  type    = string
 }
 
-variable "cidr" {
-  description = "CIDR block for the VPC"
-  type        = string
+variable "public_subnet_count" {
+  type    = number
 }
+
+variable "private_subnet_count" {
+  type    = number
+}
+
+variable "public_subnets" {
+  type = list(string)
+}
+
+variable "private_subnets" {
+  type = list(string)
+}
+
+variable "azs" {
+  type = list(string)
+}
+
