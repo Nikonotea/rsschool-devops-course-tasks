@@ -1,39 +1,49 @@
-variable "aws_region" {
+variable "region" {
   description = "AWS region"
   type        = string
 }
 
-variable "account_id" {
-  description = "AWS Account ID"
+variable "cidr_block" {
+  description = "CIDR block for VPC"
   type        = string
 }
 
-variable "github_org" {
-  description = "GitHub Organization"
-  type        = string
+variable "public_subnet_count" {
+  description = "Number of public subnets"
+  type        = number
 }
 
-variable "github_repo" {
-  description = "GitHub Repository"
-  type        = string
+variable "private_subnet_count" {
+  description = "Number of private subnets"
+  type        = number
 }
 
-variable "github_oidc_thumbprint" {
-  description = "Thumbprint for GitHub OIDC provider"
-  type        = string
-}
-
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
-  type        = string
-}
-
-variable "public_subnet_cidrs" {
-  description = "List of public subnet CIDRs"
+variable "public_subnets" {
+  description = "List of CIDR blocks for public subnets"
   type        = list(string)
 }
 
-variable "private_subnet_cidrs" {
-  description = "List of private subnet CIDRs"
+variable "private_subnets" {
+  description = "List of CIDR blocks for private subnets"
   type        = list(string)
+}
+
+variable "azs" {
+  description = "List of AXs for subnets"
+  type        = list(string)
+}
+
+variable "ami" {
+  description = "AMI for EC2 instances"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "Type of EC2"
+  type        = string
+}
+
+variable "key_name" {
+  description = "Name of SSH key for access to EC2 instances"
+  type        = string
 }

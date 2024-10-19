@@ -18,46 +18,32 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = var.region
 }
 
-# VPC Module
 module "vpc" {
-  source = "../modules/vpc"
-
-  vpc_name = "my-vpc"
-  cidr     = var.vpc_cidr
+  source               = "../modules/vpc"
+  cidr_block           = var.cidr_block
+  public_subnet_count  = var.public_subnet_count
+  private_subnet_count = var.private_subnet_count
+  public_subnets       = var.public_subnets
+  private_subnets      = var.private_subnets
+  azs                  = var.azs
+  region               = var.region
 }
 
-# Subnets Module
-module "subnets" {
-  source = "../modules/subnets"
-
-  vpc_id               = module.vpc.vpc_id
-  public_subnet_cidrs  = var.public_subnet_cidrs
-  private_subnet_cidrs = var.private_subnet_cidrs
-}
-
-# Internet Gateway Module
-module "internet_gateway" {
-  source = "../modules/internet_gateway"
-
-  vpc_id = module.vpc.vpc_id
-}
-
-# NAT Gateway Module
-module "nat_gateway" {
-  source = "../modules/nat_gateway"
-
-  vpc_id           = module.vpc.vpc_id
-  public_subnet_id = module.subnets.public_subnet_ids[0]
-}
-
-# Security Groups Module
 module "security_groups" {
-  source = "../modules/security_groups"
+  source = "../modules/security-groups"
+  vpc_id = module.vpc.vpc_id # Correctly referencing VPC ID output
+}
 
-  vpc_id             = module.vpc.vpc_id
-  public_subnet_ids  = module.subnets.public_subnet_ids
-  private_subnet_ids = module.subnets.private_subnet_ids
+module "ec2" {
+  source            = "../modules/ec2"
+  ami               = var.ami
+  instance_type     = var.instance_type
+  key_name          = var.key_name
+  bastion_sg_id     = module.security_groups.bastion_sg_id # Ensure this matches the output in the security group module
+  k3s_sg_id         = module.security_groups.k3s_sg_id     # Ensure this matches the output in the security group module
+  subnet_id         = module.vpc.public_subnets[0]
+  private_subnet_id = module.vpc.private_subnets[0]
 }

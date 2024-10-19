@@ -1,7 +1,6 @@
 terraform {
   required_version = "= 1.9.7"
 
-  # Use local backend for phase 1
   backend "local" {
     path = "terraform.tfstate"
   }
