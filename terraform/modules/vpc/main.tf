@@ -1,6 +1,6 @@
 resource "aws_vpc" "main" {
-  cidr_block = var.cidr_block
-  enable_dns_support = true
+  cidr_block           = var.cidr_block
+  enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
     Name = "k3s-vpc"
@@ -9,24 +9,25 @@ resource "aws_vpc" "main" {
 
 resource "aws_subnet" "public" {
   count = var.public_subnet_count
-  vpc_id = aws_vpc.main.id
-  cidr_block = element(var.public_subnets, count.index)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.public_subnets, count.index)
   availability_zone = element(var.azs, count.index)
   map_public_ip_on_launch = true
   tags = {
-    Name = "k3s-public-subnet-${count.index + 1}"
+    Name = "public-subnet-${count.index}"
   }
 }
 
 resource "aws_subnet" "private" {
   count = var.private_subnet_count
-  vpc_id = aws_vpc.main.id
-  cidr_block = element(var.private_subnets, count.index)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.private_subnets, count.index)
   availability_zone = element(var.azs, count.index)
   tags = {
-    Name = "k3s-private-subnet-${count.index + 1}"
+    Name = "private-subnet-${count.index}"
   }
 }
+
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
@@ -44,13 +45,13 @@ resource "aws_route_table" "public_rt" {
 }
 
 resource "aws_route_table_association" "public_assoc" {
-  count = var.public_subnet_count
-  subnet_id = aws_subnet.public[count.index].id
+  count          = var.public_subnet_count
+  subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public_rt.id
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 }
 
 resource "aws_nat_gateway" "nat" {
@@ -67,7 +68,7 @@ resource "aws_route_table" "private_rt" {
 }
 
 resource "aws_route_table_association" "private_assoc" {
-  count = var.private_subnet_count
-  subnet_id = aws_subnet.private[count.index].id
+  count          = var.private_subnet_count
+  subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private_rt.id
 }

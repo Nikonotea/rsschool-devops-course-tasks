@@ -1,12 +1,13 @@
 resource "aws_security_group" "bastion_sg" {
-  vpc_id = var.vpc_id
-  name   = "bastion-sg"
+  name        = "bastion_sg"
+  description = "Allow SSH access to Bastion host"
+  vpc_id     = var.vpc_id
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]  # Restrict this in production
   }
 
   egress {
@@ -17,26 +18,20 @@ resource "aws_security_group" "bastion_sg" {
   }
 
   tags = {
-    Name = "bastion-sg"
+    Name = "Bastion Security Group"
   }
 }
 
 resource "aws_security_group" "k3s_sg" {
-  vpc_id = var.vpc_id
-  name   = "k3s-sg"
+  name        = "k3s_sg"
+  description = "Allow traffic for K3s cluster"
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]  # Restrict this in production
   }
 
   egress {
@@ -47,6 +42,6 @@ resource "aws_security_group" "k3s_sg" {
   }
 
   tags = {
-    Name = "k3s-sg"
+    Name = "K3s Security Group"
   }
 }
