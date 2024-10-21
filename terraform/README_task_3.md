@@ -82,7 +82,7 @@ terraform apply
 
 When prompted, confirm by typing `yes`.
 
-### 6. Connect to the Bastion Host
+### 6. Check connection to the Bastion Host
 
 Once the infrastructure is created, connect to the Bastion Host via SSH using the public IP provided in the output:
 
@@ -90,13 +90,59 @@ Once the infrastructure is created, connect to the Bastion Host via SSH using th
 ssh -i ~/.ssh/id_aws_rsa ubuntu@$(terraform output -raw bastion_host_public_ip)
 ```
 
+- Install the kubectl binary localy:
+
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+```
+
+Make the binary executable:
+```bash
+chmod +x ./kubectl
+```
+
+Move the binary to your system’s PATH:
+```bash
+sudo mv ./kubectl /usr/local/bin/kubectl
+```
+
+Verify the installation:
+```bash
+kubectl version --client
+```
+SSH into the K3s Master Node from the Bastion Host (replace <K3S_MASTER_PRIVATE_IP>):
+```bash
+ssh ubuntu@<K3S_MASTER_PRIVATE_IP>
+```
+Copy the K3s Configuration File to the Bastion Host:
+```bash
+scp /etc/rancher/k3s/k3s.yaml ubuntu@<Bastion_Public_IP>:~/k3s.yaml
+```
+
+Download the K3s Configuration File to Your Local Machine (from your local terminal):
+```bash
+scp -i ~/.ssh/id_aws_rsa ubuntu@<Bastion_Public_IP>:~/k3s.yaml ~/kubeconfig_k3s.yaml
+```
+
+Edit the Kubeconfig File if required:
+Change the server: line in kubeconfig_k3s.yaml to point to localhost:
+```yaml
+server: https://localhost:6443
+```
+Set the KUBECONFIG Environment Variable:
+```bash
+export KUBECONFIG=~/kubeconfig_k3s.yaml
+```
+
 ### 7. Set Up an SSH Tunnel for Accessing the K3s Cluster
 
 Create an SSH tunnel from your local machine to access the K3s API server through the Bastion Host:
 
 ```bash
-ssh -i ~/.ssh/id_aws_rsa -L 6443:$(terraform output -raw k3s_master_private_ip):6443 ubuntu@$(terraform output -raw bastion_host_public_ip)
+ssh -i ~/.ssh/id_aws_rsa -L 6443:$(terraform output -raw k3s_master_private_ip):6443 ubuntu@$(terraform output -raw bastion_host_public_ip) -N
 ```
+- After you run this command, you should not be logged into the Bastion Host. Instead, the terminal will just sit there silently (because of the -N flag), keeping the SSH tunnel open.
+- While this SSH session is open, in a separate terminal, you can run kubectl commands on your local machine (which will use the tunnel to communicate with the K3s API server).
 
 ### 8. Configure `kubectl` to Connect to the K3s Cluster
 
