@@ -1,7 +1,6 @@
 terraform {
   required_version = "= 1.9.7"
 
-  # Use local backend for phase 1
   backend "local" {
     path = "terraform.tfstate"
   }
@@ -19,7 +18,7 @@ provider "aws" {
 }
 
 module "s3_bucket" {
-  source      = "../s3bucket"
+  source      = "../modules/s3_bucket"
   bucket_name = var.bucket_name
   environment = var.environment
 }
