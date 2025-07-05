@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-jcasc
+data:
+  jcasc.yaml: |
+{{ .Values.jcasc.config | indent 4 }}
