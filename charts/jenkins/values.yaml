@@ -1,0 +1,24 @@
+admin:
+  existingSecret: jenkins-admin-secret
+  userKey: jenkins-admin-user
+  passwordKey: jenkins-admin-password
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30080
+
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: standard
+
+jcasc:
+  config: |
+    jobs:
+      - script: >
+          job('HelloWorld') {
+            steps {
+              shell('echo "Hello world"')
+            }
+          }
