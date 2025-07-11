@@ -13,15 +13,16 @@ This repository contains a simple Flask application and a Helm chart for deployi
 .
 ├── flask_app\
 │   ├── Dockerfile
-│   ├── requirements.txt
-│   └── main.py
+│   ├── README.md
+│   ├── main.py
+│   └── requirements.txt
 ├── helm-chart/
 │    └── flask-app/
+│        ├── .helmignore
+│        ├── templates/..
 │        ├── Chart.yaml
-│        ├── templates/
-│        │   ├── deployment.yaml
-│        │   └── service.yaml
 │        └── values.yaml
+├── .gitignore
 └── README.md
 ```
 ## Steps
