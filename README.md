@@ -2,10 +2,6 @@
 
 ## [Task 5: Simple Application Deployment with Helm](https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-configuration/task_5.md)
 
-# Simple Flask Application for AWS DevOps Course
-
-This repository contains a simple Flask application and a Helm chart for deploying it to Kubernetes as part of an AWS DevOps course (Task 5).
-
 ## Repository Structure
 
 ```bash
