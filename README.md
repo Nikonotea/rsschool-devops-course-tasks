@@ -37,7 +37,7 @@ docker build -t mykola-flask-app .
 ```
 2. Run locally to test
 ```
-docker run -p 8080:8080 my-flask-app
+docker run -p 8080:8080 mykola-flask-app
 ```
 3. Helm Chart Creation
 ```
@@ -45,7 +45,7 @@ helm create flask-app
 ```
 3. Load Image into Minikube
 ```
-minikube image load my-flask-app
+minikube image load mykola-flask-app
 ```
 4. Deploy Application via Helm
 ```
@@ -65,7 +65,7 @@ minikube start
 docker build -t mykola-flask-app .
 
 # Load image into minikube
-minikube image load my-flask-app
+minikube image load mykola-flask-app
 
 # Install Helm chart
 helm install flask-app ./flask-app
