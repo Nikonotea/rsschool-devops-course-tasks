@@ -11,14 +11,24 @@
 │   ├── Dockerfile
 │   ├── README.md
 │   ├── main.py
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── test_application.py
 ├── helm-chart/
-│    └── flask-app/
-│        ├── .helmignore
-│        ├── templates/..
+│    ├── flask-app/
+│    │   ├── .helmignore
+│    │   ├── templates/..
+│    │   ├── Chart.yaml
+│    │   └── values.yaml
+│    └── jenkins
+│        ├── jenkins/..
+│        ├── CHANGELOG.md
 │        ├── Chart.yaml
+│        ├── README.md
+│        ├── UPGRADING.md
+│        ├── VALUES.md.gotmpl
 │        └── values.yaml
 ├── .gitignore
+├── Jenkinsfile
 └── README.md
 ```
 ## Steps
@@ -55,6 +65,23 @@ helm install flask-app ./flask-app
 ```
 minikube service flask-app
 ```
+6. Deploy Jenkins via Helm
+
+```
+helm repo add jenkins https://charts.jenkins.io
+helm repo update
+kubectl create namespace jenkins
+helm upgrade --install jenkins jenkins/jenkins -n jenkins -f jenkins-values.yaml
+```
+7. Access Jenkins 
+```
+minikube service jenkins -n jenkins --url
+```
+
+8. Configuration
+Jenkins jobs and settings through JCasC in the Helm chart values file jenkins-values.yaml
+"Hello World" freestyle job created automatically via JCasC configuration
+Confirm Jenkins pods are running with `kubectl get pods -n jenkins`
 
 ## Used Commands
 ```
@@ -72,4 +99,11 @@ helm install flask-app ./flask-app
 
 # Open service in browser
 minikube service flask-app
+
+# Deploy Jenkins via Helm
+helm repo add jenkins https://charts.jenkins.io
+helm repo update
+kubectl create namespace jenkins
+helm upgrade --install jenkins jenkins/jenkins -n jenkins -f jenkins-va
+minikube service jenkins -n jenkins --url
 ```
