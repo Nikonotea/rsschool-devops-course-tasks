@@ -27,6 +27,9 @@
 │        ├── UPGRADING.md
 │        ├── VALUES.md.gotmpl
 │        └── values.yaml
+├── monitoring/
+│    ├── templates/
+│    └── ...
 ├── .gitignore
 ├── Jenkinsfile
 └── README.md
@@ -106,4 +109,17 @@ helm repo update
 kubectl create namespace jenkins
 helm upgrade --install jenkins jenkins/jenkins -n jenkins -f jenkins-va
 minikube service jenkins -n jenkins --url
+```
+#### Helm Deployment
+```
+helm upgrade --install flask-app ./helm_charts/flask-app
+--set image.repository=your-repo/flask-app
+--set image.tag=latest
+--set serviceAccount.create=false
+```
+### Monitoring and Debugging
+```
+kubectl get pods -n jenkins
+kubectl get service flask-app -n jenkins
+curl [http://flask-app.jenkins.svc.cluster.local:8080/](http://flask-app.jenkins.svc.cluster.local:8080/)
 ```
