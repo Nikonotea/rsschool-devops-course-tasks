@@ -9,9 +9,10 @@ pipeline {
             apiVersion: v1
             kind: Pod
             spec:
+              serviceAccountName: jenkins
               containers:
                 - name: jnlp
-                  image: jenkins/inbound-agent:latest
+                  image: jenkins/inbound-agent:3309.v27b_9314fd1a_4-6
 
                 - name: python
                   image: python:3.13
@@ -25,6 +26,12 @@ pipeline {
                   volumeMounts:
                     - name: docker-sock
                       mountPath: /var/run/docker.sock
+
+                - name: helm
+                  image: lachlanevenson/k8s-helm:v3.10.2
+                  command: ["cat"]
+                  tty: true
+
               volumes:
                 - name: docker-sock
                   hostPath:
@@ -39,7 +46,7 @@ pipeline {
             steps {
                 git(
                     url: 'https://github.com/Nikonotea/rsschool-devops-course-tasks.git',
-                    branch: 'task_6',
+                    branch: 'task_7',
                     credentialsId: 'github-creds'
                 )
             }
@@ -63,27 +70,6 @@ pipeline {
             }
         }
 
-        stage('Security check with SonarCloud') {
-            steps {
-                container('python') {
-                    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                        sh '''
-                            apt-get update -qq && apt-get install -y --no-install-recommends unzip wget openjdk-17-jre-headless
-                            wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-                            unzip -q sonar-scanner-cli-*.zip
-                            mv sonar-scanner-5.0.1.3006-linux sonar-scanner
-                            export PATH=$PWD/sonar-scanner/bin:$PATH
-                            sonar-scanner \
-                                -Dsonar.projectKey=mykola_rsschool-devops-course-tasks \
-                                -Dsonar.organization=mykola \
-                                -Dsonar.sources=flask_app \
-                                -Dsonar.host.url=https://sonarcloud.io \
-                                -Dsonar.login=$SONAR_TOKEN
-                        '''
-                    }
-                }
-            }
-        }
 
         stage('Docker build and push to Docker Hub') {
             steps {
@@ -122,6 +108,48 @@ pipeline {
             }
         }
 
+         stage('Add Helm Repository') {
+                    steps {
+                        container('helm') {
+                            sh '''
+                            helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+                            helm repo add grafana https://grafana.github.io/helm-charts
+                            helm repo update
+                            '''
+                        }
+                    }
+                }
+
+                stage('Deploy Prometheus') {
+                    steps {
+                        container('helm') {
+                            dir('monitoring') {
+                                sh '''
+                                helm upgrade --install my-prometheus prometheus-community/prometheus \
+                                --namespace monitoring \
+                                --create-namespace \
+                                --values values-prometheus.yaml
+                                '''
+                            }
+                        }
+                    }
+                }
+
+                stage('Deploy Grafana') {
+                    steps {
+                        container('helm') {
+                            dir('monitoring') {
+                                sh '''
+                                helm upgrade --install my-grafana grafana/grafana \
+                                --namespace monitoring \
+                                --values values-grafana.yaml
+                                '''
+                            }
+                        }
+                    }
+                }
+
+
         stage('Deploy App to minikube from Docker Hub') {
             steps {
                 sh """
@@ -129,8 +157,10 @@ pipeline {
                         --namespace jenkins \
                         --set image.repository=nmykola/rsschool-flask-app \
                         --set image.tag=\${BUILD_NUMBER} \
-                        --set image.pullPolicy=IfNotPresent
-                        --set serviceAccount.create=false
+                        --set image.pullPolicy=IfNotPresent \
+                        --set serviceAccount.create=false \
+                        --wait \
+                        --timeout=300s
                 """
             }
         }
